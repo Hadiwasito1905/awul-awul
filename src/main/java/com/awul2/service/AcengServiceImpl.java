@@ -103,9 +103,9 @@ public class AcengServiceImpl implements AcengService {
     }
 
     @Override
-    public ResponseEntity<List<TestPunyaAceng>> getUltimateKempid() {
+    public ResponseEntity<List<TestPunyaAceng>> getUltimateKempid(String search) {
 
-        List<TypeCompanyDto> headerCol = queryDataKempid.getAllKempid();
+        List<TypeCompanyDto> headerCol = queryDataKempid.getAllKempid(search);
         List<TestPunyaAceng> record = new ArrayList<>();
 
         for (TypeCompanyDto value : headerCol){

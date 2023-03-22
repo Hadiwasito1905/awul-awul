@@ -33,8 +33,9 @@ public class AcengKontoller {
     }
 
     @GetMapping("/getallaceng")
-    public ResponseEntity<List<TestPunyaAceng>> getFinalAcengData(){
-        return acengService.getUltimateKempid();
+    public ResponseEntity<List<TestPunyaAceng>>
+    getFinalAcengData(@RequestParam(value = "search", required = false) String search){
+        return acengService.getUltimateKempid(search);
     }
 
     @GetMapping("/page")

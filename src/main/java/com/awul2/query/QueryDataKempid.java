@@ -131,10 +131,10 @@ public class QueryDataKempid {
         String select = "";
         if (details){
             select = "select ut.id_company_type as roleId, " +
-                    "       ut.name as roleName, " +
-                    "       ut.created_date as createdDate, " +
-                    "       ct.name as typeCompany, " +
-                    "       ut.is_active as isAktif " +
+                    "        ut.name as roleName, " +
+                    "        ut.created_date as createdDate, " +
+                    "        ct.name as typeCompany, " +
+                    "        ut.is_active as isAktif " +
                     "       from user_type ut " +
                     "JOIN company_type ct on ut.id_company_type = ct.id " +
                     "WHERE ut.id_company_type = :tipe ";
@@ -152,14 +152,29 @@ public class QueryDataKempid {
         return query;
     }
 
-    public List<TypeCompanyDto> getAllKempid(){
+    public List<TypeCompanyDto> getAllKempid(String search){
 
-        String select = "SELECT * FROM company_type ";
-        Query query = entityManager.createNativeQuery(select);
+        String select = "select ct.id, ut.name " +
+                "from company_type ct " +
+                "join user_type ut on ct.id = ut.id_company_type ";
+
+        String where = "";
+        if (search == null){
+            where = "";
+        }else {
+            where = "WHERE ut.name LIKE :search ";
+        }
+
+        String groupBy = "group by ct.name ";
+
+        String sql = select + where + groupBy;
+        Query query = entityManager.createNativeQuery(sql);
+        if (search != null) {
+            query.setParameter("search", "%" + search + "%");
+        }
 
         List<Object[]> record = query.getResultList();
         List<TypeCompanyDto> newType = new ArrayList<>();
-
         for (Object[] value : record){
             TypeCompanyDto model = new TypeCompanyDto();
             model.setId((Integer) value[0]);
@@ -176,15 +191,15 @@ public class QueryDataKempid {
         List<TestPunyaAceng.Detail> value = new ArrayList<>();
         List<Object[]> details = getKempidFinal(tipe, true).getResultList();
         if (details.isEmpty()){
-            TestPunyaAceng.Detail model = TestPunyaAceng.Detail.builder()
-                    .roleId(null)
-                    .roleName(null)
-                    .isAktif(null)
-                    .typeCompay(null)
-                    .createdDate(null)
-                    .disableDate(null)
-                    .build();
-            value.add(model);
+//            TestPunyaAceng.Detail model = TestPunyaAceng.Detail.builder()
+//                    .roleId(null)
+//                    .roleName(null)
+//                    .isAktif(null)
+//                    .typeCompay(null)
+//                    .createdDate(null)
+//                    .disableDate(null)
+//                    .build();
+//            value.add(model);
         }else {
             for (Object[] record : details){
                 TestPunyaAceng.Detail model = new TestPunyaAceng.Detail();
@@ -200,19 +215,19 @@ public class QueryDataKempid {
 
         TestPunyaAceng.GroupTitle title = null;
         try {
-            String groupTitle = (String) getKempidFinal(tipe, false).getSingleResult();
+            String groupTitle = (String) getKempidFinal(tipe,false).getSingleResult();
             title = TestPunyaAceng.GroupTitle.builder()
                     .typePerusahaan(groupTitle)
                     .build();
         }catch (NoResultException ex){
             ex.getMessage();
-            title = TestPunyaAceng.GroupTitle.builder()
-                    .typePerusahaan("KOSONG CENG CENG")
-                    .build();
+//            title = TestPunyaAceng.GroupTitle.builder()
+//                    .typePerusahaan("KOSONG CENG CENG")
+//                    .build();
         }catch (NonUniqueResultException ex){
-            title = TestPunyaAceng.GroupTitle.builder()
-                    .typePerusahaan("Tetep GA ketemu Ceng")
-                    .build();
+//            title = TestPunyaAceng.GroupTitle.builder()
+//                    .typePerusahaan("Tetep GA ketemu Ceng")
+//                    .build();
         }
 
         TestPunyaAceng.HeaderData key = TestPunyaAceng.HeaderData.builder()
@@ -220,11 +235,12 @@ public class QueryDataKempid {
                 .build();
 
         TestPunyaAceng kempid = TestPunyaAceng.builder()
-                .data(value)
-                .groupTitle(title)
-                .headerData(key)
-                .build();
+                    .data(value)
+                    .groupTitle(title)
+                    .headerData(key)
+                    .build();
 
         return kempid;
     }
+
 }

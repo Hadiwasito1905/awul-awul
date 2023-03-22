@@ -72,7 +72,8 @@ public class testQuery {
     void finalAll(){
 
         Gson gson = new Gson();
-        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid();
+        String search = "admin";
+        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid(search);
         List<TestPunyaAceng> record = new ArrayList<>();
 
         for (TypeCompanyDto value : headerCol){
@@ -87,6 +88,7 @@ public class testQuery {
     void testLagih(){
         Gson gson = new Gson();
         Integer tipe = 3;
+        String search = "admin";
         TestPunyaAceng data = dataKempid.finalKempidPower(tipe);
         System.out.println("PRINT THIS " + gson.toJson(data));
     }
