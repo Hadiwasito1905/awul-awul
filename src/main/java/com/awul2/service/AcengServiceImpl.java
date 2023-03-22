@@ -2,6 +2,7 @@ package com.awul2.service;
 
 import com.awul2.dto.KostKempidReq;
 import com.awul2.dto.TestPunyaAceng;
+import com.awul2.dto.TypeCompanyDto;
 import com.awul2.model.DataKostKempid;
 import com.awul2.query.QueryDataKempid;
 import com.awul2.repo.DataKostKempidRepo;
@@ -45,7 +46,7 @@ public class AcengServiceImpl implements AcengService {
             TestPunyaAceng.Detail model = new TestPunyaAceng.Detail();
             model.setRoleId(record.getRoleId());
             model.setRoleName(record.getRoleName());
-            model.setTypeCompay(record.getTypeCompany());
+            model.setTypeCompay(record.getTypeCompany().toString());
             model.setIsAktif(record.getIsAktif());
             model.setCreatedDate(record.getCreateDate().toString());
             model.setDisableDate(null);
@@ -88,11 +89,26 @@ public class AcengServiceImpl implements AcengService {
 
     @Override
     public ResponseEntity<List<TestPunyaAceng>> getFinalData() {
+
         List<DataKostKempid> dataKostKempids = dataKostKempidRepo.findbyGroup();
         List<TestPunyaAceng> record = new ArrayList<>();
 
         for (DataKostKempid value : dataKostKempids){
             TestPunyaAceng model = queryDataKempid.getFinal(value.getTypeCompany());
+            record.add(model);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<TestPunyaAceng>> getUltimateKempid() {
+
+        List<TypeCompanyDto> headerCol = queryDataKempid.getAllKempid();
+        List<TestPunyaAceng> record = new ArrayList<>();
+
+        for (TypeCompanyDto value : headerCol){
+            TestPunyaAceng model = queryDataKempid.finalKempidPower(value.getId());
             record.add(model);
         }
 

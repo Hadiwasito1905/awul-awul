@@ -1,8 +1,11 @@
 package com.awul2;
 
 import com.awul2.dto.TestPunyaAceng;
+import com.awul2.model.DataKostKempid;
 import com.awul2.query.QueryDataKempid;
+import com.awul2.repo.DataKostKempidRepo;
 import com.awul2.service.AcengService;
+import com.google.gson.Gson;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.Query;
@@ -24,9 +27,11 @@ public class testQuery {
 
     @Autowired
     AcengService acengService;
-
     @Autowired
     QueryDataKempid dataKempid;
+    @Autowired
+    DataKostKempidRepo dataKostKempidRepo;
+
     @Test
     void testListData(){
        Query query = dataKempid.getFinalData(4, true);
@@ -60,5 +65,19 @@ public class testQuery {
             System.out.println("KOSONG CENG");
         }
 
+    }
+
+    @Test
+    void finalAll(){
+        Gson gson = new Gson();
+        List<DataKostKempid> dataKostKempids = dataKostKempidRepo.findbyGroup();
+        List<TestPunyaAceng> record = new ArrayList<>();
+
+        for (DataKostKempid value : dataKostKempids){
+            TestPunyaAceng model = dataKempid.getFinal(value.getTypeCompany());
+            record.add(model);
+        }
+
+        System.out.println(gson.toJson(record));
     }
 }

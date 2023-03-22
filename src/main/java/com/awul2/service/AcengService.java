@@ -16,6 +16,7 @@ public interface AcengService {
     ResponseEntity<TestPunyaAceng> getDataAceng(Integer tipe);
     ResponseEntity<DataKostKempid> addData(KostKempidReq req);
     ResponseEntity<List<TestPunyaAceng>> getFinalData();
+    ResponseEntity<List<TestPunyaAceng>> getUltimateKempid();
 
 
 }

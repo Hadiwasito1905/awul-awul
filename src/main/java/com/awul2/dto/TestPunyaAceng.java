@@ -14,6 +14,8 @@ import java.util.List;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TestPunyaAceng {
 
     private List<Detail> data;
@@ -29,7 +31,7 @@ public class TestPunyaAceng {
         private Integer roleId;
         private String roleName;
         private Integer isAktif;
-        private Integer typeCompay;
+        private String typeCompay;
         private String createdDate;
         private String disableDate;
     }

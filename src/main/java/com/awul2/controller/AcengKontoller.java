@@ -31,4 +31,9 @@ public class AcengKontoller {
     public ResponseEntity<List<TestPunyaAceng>> getFinalData(){
         return acengService.getFinalData();
     }
+
+    @GetMapping("/getallaceng")
+    public ResponseEntity<List<TestPunyaAceng>> getFinalAcengData(){
+        return acengService.getUltimateKempid();
+    }
 }
