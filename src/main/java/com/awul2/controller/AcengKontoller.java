@@ -36,4 +36,10 @@ public class AcengKontoller {
     public ResponseEntity<List<TestPunyaAceng>> getFinalAcengData(){
         return acengService.getUltimateKempid();
     }
+
+    @GetMapping("/page")
+    public ResponseEntity<Object> samplePage(@RequestParam Integer pageNumber,
+                                             @RequestParam Integer pageSize){
+        return acengService.samplePage(pageNumber, pageSize);
+    }
 }

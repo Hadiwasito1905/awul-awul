@@ -17,6 +17,7 @@ public interface AcengService {
     ResponseEntity<DataKostKempid> addData(KostKempidReq req);
     ResponseEntity<List<TestPunyaAceng>> getFinalData();
     ResponseEntity<List<TestPunyaAceng>> getUltimateKempid();
+    ResponseEntity<Object> samplePage(Integer pageNumber, Integer pageSize);
 
 
 }

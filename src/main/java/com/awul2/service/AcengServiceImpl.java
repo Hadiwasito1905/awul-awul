@@ -8,13 +8,14 @@ import com.awul2.query.QueryDataKempid;
 import com.awul2.repo.DataKostKempidRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author "Noverry Ambo"
@@ -113,6 +114,18 @@ public class AcengServiceImpl implements AcengService {
         }
 
         return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> samplePage(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageableElement = PageRequest.of(pageNumber, pageSize);
+        Page<DataKostKempid> all = dataKostKempidRepo.findAll(pageableElement);
+
+        Map<String, Object> newMap = new HashMap<>();
+
+        newMap.put("data", all);
+        return new ResponseEntity<>(newMap, HttpStatus.OK);
     }
 
 }
