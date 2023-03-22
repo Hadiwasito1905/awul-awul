@@ -109,7 +109,7 @@ public class AcengServiceImpl implements AcengService {
         List<TestPunyaAceng> record = new ArrayList<>();
 
         for (TypeCompanyDto value : headerCol){
-            TestPunyaAceng model = queryDataKempid.finalKempidPower(value.getId());
+            TestPunyaAceng model = queryDataKempid.finalKempidPower(value.getId(), search);
             record.add(model);
         }
 

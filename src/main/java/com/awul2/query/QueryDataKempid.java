@@ -126,7 +126,7 @@ public class QueryDataKempid {
 
     }
 
-    public Query getKempidFinal(Integer tipe, Boolean details){
+    public Query getKempidFinal(Integer tipe,String search, Boolean details){
 
         String select = "";
         if (details){
@@ -136,19 +136,33 @@ public class QueryDataKempid {
                     "        ct.name as typeCompany, " +
                     "        ut.is_active as isAktif " +
                     "       from user_type ut " +
-                    "JOIN company_type ct on ut.id_company_type = ct.id " +
-                    "WHERE ut.id_company_type = :tipe ";
+                    "JOIN company_type ct on ut.id_company_type = ct.id ";
         } else {
             select = "select ct.name as typeCompany " +
-                    "       from user_type ut " +
-                    "JOIN company_type ct on ut.id_company_type = ct.id " +
-                    "WHERE ut.id_company_type = :tipe " +
-                    "GROUP BY ct.id ";
+                    "from user_type ut " +
+                    "JOIN company_type ct on ut.id_company_type = ct.id ";
         }
 
-        Query query = entityManager.createNativeQuery(select);
-        query.setParameter("tipe", tipe);
+        String where = "";
+        if (search != null){
+            where = "WHERE ut.id_company_type = :tipe AND ut.name LIKE :search ";
+        }else {
+            where = "";
+        }
 
+        String groupBy = "";
+        if (!details){
+            groupBy = "GROUP BY ct.id ";
+        }
+
+        String sql = select + where + groupBy;
+        Query query = entityManager.createNativeQuery(sql);
+        if (search != null) {
+            query.setParameter("tipe", tipe);
+            query.setParameter("search", "%" + search + "%");
+        }
+
+        log.info("SQL : " + query.toString());
         return query;
     }
 
@@ -168,10 +182,12 @@ public class QueryDataKempid {
         String groupBy = "group by ct.name ";
 
         String sql = select + where + groupBy;
+
         Query query = entityManager.createNativeQuery(sql);
         if (search != null) {
             query.setParameter("search", "%" + search + "%");
         }
+        log.info("SQL : " + query.toString());
 
         List<Object[]> record = query.getResultList();
         List<TypeCompanyDto> newType = new ArrayList<>();
@@ -186,10 +202,10 @@ public class QueryDataKempid {
 
     }
 
-    public TestPunyaAceng finalKempidPower(Integer tipe){
+    public TestPunyaAceng finalKempidPower(Integer tipe, String search){
 
         List<TestPunyaAceng.Detail> value = new ArrayList<>();
-        List<Object[]> details = getKempidFinal(tipe, true).getResultList();
+        List<Object[]> details = getKempidFinal(tipe, search, true).getResultList();
         if (details.isEmpty()){
 //            TestPunyaAceng.Detail model = TestPunyaAceng.Detail.builder()
 //                    .roleId(null)
@@ -215,7 +231,7 @@ public class QueryDataKempid {
 
         TestPunyaAceng.GroupTitle title = null;
         try {
-            String groupTitle = (String) getKempidFinal(tipe,false).getSingleResult();
+            String groupTitle = (String) getKempidFinal(tipe, search, false).getSingleResult();
             title = TestPunyaAceng.GroupTitle.builder()
                     .typePerusahaan(groupTitle)
                     .build();

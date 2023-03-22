@@ -68,29 +68,29 @@ public class testQuery {
 
     }
 
-    @Test
-    void finalAll(){
+//    @Test
+//    void finalAll(){
+//
+//        Gson gson = new Gson();
+//        String search = "admin";
+//        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid(search);
+//        List<TestPunyaAceng> record = new ArrayList<>();
+//
+//        for (TypeCompanyDto value : headerCol){
+//            TestPunyaAceng model = dataKempid.finalKempidPower(value.getId());
+//            record.add(model);
+//        }
+//
+//        System.out.println(gson.toJson(record));
+//    }
 
-        Gson gson = new Gson();
-        String search = "admin";
-        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid(search);
-        List<TestPunyaAceng> record = new ArrayList<>();
-
-        for (TypeCompanyDto value : headerCol){
-            TestPunyaAceng model = dataKempid.finalKempidPower(value.getId());
-            record.add(model);
-        }
-
-        System.out.println(gson.toJson(record));
-    }
-
-    @Test
-    void testLagih(){
-        Gson gson = new Gson();
-        Integer tipe = 3;
-        String search = "admin";
-        TestPunyaAceng data = dataKempid.finalKempidPower(tipe);
-        System.out.println("PRINT THIS " + gson.toJson(data));
-    }
+//    @Test
+//    void testLagih(){
+//        Gson gson = new Gson();
+//        Integer tipe = 3;
+//        String search = "admin";
+//        TestPunyaAceng data = dataKempid.finalKempidPower(tipe);
+//        System.out.println("PRINT THIS " + gson.toJson(data));
+//    }
 
 }
