@@ -5,6 +5,8 @@ import com.awul2.dto.TestPunyaAceng;
 import com.awul2.model.DataKostKempid;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 /**
  * @author "Noverry Ambo"
  * @start 3/21/2023
@@ -13,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 public interface AcengService {
     ResponseEntity<TestPunyaAceng> getDataAceng(Integer tipe);
     ResponseEntity<DataKostKempid> addData(KostKempidReq req);
-    ResponseEntity<TestPunyaAceng> getFinalData(Integer tipe);
+    ResponseEntity<List<TestPunyaAceng>> getFinalData();
 
 
 }

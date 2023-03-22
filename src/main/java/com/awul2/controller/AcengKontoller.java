@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author "Noverry Ambo"
  * @start 3/21/2023
@@ -26,7 +28,7 @@ public class AcengKontoller {
     }
 
     @GetMapping("/getfinal")
-    public ResponseEntity<TestPunyaAceng> getFinalData(@RequestParam Integer tipe){
-        return acengService.getFinalData(tipe);
+    public ResponseEntity<List<TestPunyaAceng>> getFinalData(){
+        return acengService.getFinalData();
     }
 }

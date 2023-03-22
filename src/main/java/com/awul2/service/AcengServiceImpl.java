@@ -87,8 +87,16 @@ public class AcengServiceImpl implements AcengService {
     }
 
     @Override
-    public ResponseEntity<TestPunyaAceng> getFinalData(Integer tipe) {
-        return new ResponseEntity<>(queryDataKempid.getFinal(tipe), HttpStatus.OK);
+    public ResponseEntity<List<TestPunyaAceng>> getFinalData() {
+        List<DataKostKempid> dataKostKempids = dataKostKempidRepo.findbyGroup();
+        List<TestPunyaAceng> record = new ArrayList<>();
+
+        for (DataKostKempid value : dataKostKempids){
+            TestPunyaAceng model = queryDataKempid.getFinal(value.getTypeCompany());
+            record.add(model);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
 }

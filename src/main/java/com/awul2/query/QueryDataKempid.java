@@ -45,10 +45,10 @@ public class QueryDataKempid {
 
     }
 
-    public Query getFinalData(Integer tipe, Boolean detail){
+    public Query getFinalData(Integer tipe, Boolean details){
 
         String condition = "";
-        if (detail){
+        if (details){
             condition = "SELECT dkm.role_id, " +
                     "dkm.role_name, " +
                     "dkm.create_date, " +
@@ -58,7 +58,7 @@ public class QueryDataKempid {
                     "from data_kost_kempid dkm " +
                     "JOIN master_type_company mtc on dkm.type_company = mtc.type_id " +
                     "WHERE dkm.type_company = :tipe ";
-        } else {
+        } else{
             condition = "SELECT mtc.type_company FROM data_kost_kempid dkm " +
                     "JOIN master_type_company mtc on dkm.type_company = mtc.type_id " +
                     "WHERE dkm.type_company = :tipe " +
@@ -69,6 +69,14 @@ public class QueryDataKempid {
         query.setParameter("tipe", tipe);
 
         return query;
+    }
+
+    public Integer countData(){
+            String select = "SELECT count(*) FROM master_type_company ";
+            Query query = entityManager.createNativeQuery(select);
+            Integer count = (Integer) query.getSingleResult();
+
+            return count;
     }
 
     public TestPunyaAceng getFinal(Integer tipe){
