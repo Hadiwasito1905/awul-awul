@@ -1,6 +1,7 @@
 package com.awul2;
 
 import com.awul2.dto.TestPunyaAceng;
+import com.awul2.dto.TypeCompanyDto;
 import com.awul2.model.DataKostKempid;
 import com.awul2.query.QueryDataKempid;
 import com.awul2.repo.DataKostKempidRepo;
@@ -42,7 +43,7 @@ public class testQuery {
                 TestPunyaAceng.Detail model = new TestPunyaAceng.Detail();
                 model.setRoleId((Integer) record[0]);
                 model.setRoleName((String) record[1]);
-                model.setTypeCompay((Integer) record[2]);
+                model.setTypeCompay((String) record[2]);
                 model.setIsAktif((Integer) record[3]);
                 model.setCreatedDate((String) record[4]);
                 model.setDisableDate(null);
@@ -69,15 +70,25 @@ public class testQuery {
 
     @Test
     void finalAll(){
+
         Gson gson = new Gson();
-        List<DataKostKempid> dataKostKempids = dataKostKempidRepo.findbyGroup();
+        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid();
         List<TestPunyaAceng> record = new ArrayList<>();
 
-        for (DataKostKempid value : dataKostKempids){
-            TestPunyaAceng model = dataKempid.getFinal(value.getTypeCompany());
+        for (TypeCompanyDto value : headerCol){
+            TestPunyaAceng model = dataKempid.finalKempidPower(value.getId());
             record.add(model);
         }
 
         System.out.println(gson.toJson(record));
     }
+
+    @Test
+    void testLagih(){
+        Gson gson = new Gson();
+        Integer tipe = 3;
+        TestPunyaAceng data = dataKempid.finalKempidPower(tipe);
+        System.out.println("PRINT THIS " + gson.toJson(data));
+    }
+
 }

@@ -191,7 +191,7 @@ public class QueryDataKempid {
                 model.setRoleId((Integer) record[0]);
                 model.setRoleName((String) record[1]);
                 model.setCreatedDate(record[2].toString());
-                model.setDisableDate(null);
+                model.setDisableDate("null");
                 model.setTypeCompay((String) record[3]);
                 model.setIsAktif((Integer) record[4]);
                 value.add(model);
