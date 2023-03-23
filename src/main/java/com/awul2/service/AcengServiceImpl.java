@@ -6,6 +6,8 @@ import com.awul2.dto.TypeCompanyDto;
 import com.awul2.model.DataKostKempid;
 import com.awul2.query.QueryDataKempid;
 import com.awul2.repo.DataKostKempidRepo;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -109,7 +111,7 @@ public class AcengServiceImpl implements AcengService {
         List<TestPunyaAceng> record = new ArrayList<>();
 
         for (TypeCompanyDto value : headerCol){
-            TestPunyaAceng model = queryDataKempid.finalKempidPower(value.getId(), search);
+            TestPunyaAceng model = queryDataKempid.finalKempidPower(1, search);
             record.add(model);
         }
 
@@ -126,6 +128,35 @@ public class AcengServiceImpl implements AcengService {
 
         newMap.put("data", all);
         return new ResponseEntity<>(newMap, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> revamp(String search) {
+        List<TypeCompanyDto> headerCol = queryDataKempid.getRevamp(search);
+
+        TestPunyaAceng.GroupTitle title = null;
+        List<TestPunyaAceng> record = new ArrayList<>();
+
+        for (TypeCompanyDto value : headerCol){
+            List<TestPunyaAceng.Detail> model = queryDataKempid.getRevampDetail(value.getName());
+            TestPunyaAceng newMod = new TestPunyaAceng();
+
+
+            title = TestPunyaAceng.GroupTitle.builder()
+                    .typePerusahaan(value.getName())
+                    .build();
+
+            TestPunyaAceng.HeaderData key = TestPunyaAceng.HeaderData.builder()
+                    .key("Secret Key")
+                    .build();
+
+            newMod.setData(model);
+            newMod.setGroupTitle(title);
+            newMod.setHeaderData(key);
+            record.add(newMod);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
 }

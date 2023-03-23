@@ -43,4 +43,11 @@ public class AcengKontoller {
                                              @RequestParam Integer pageSize){
         return acengService.samplePage(pageNumber, pageSize);
     }
+
+    //Revamp
+    @GetMapping("/revamp")
+    public ResponseEntity<Object>
+    revamp(@RequestParam(value = "search", required = false) String search ){
+        return acengService.revamp(search);
+    }
 }

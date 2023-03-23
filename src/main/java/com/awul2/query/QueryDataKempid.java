@@ -68,7 +68,6 @@ public class QueryDataKempid {
 
         return query;
     }
-
     public TestPunyaAceng getFinal(Integer tipe){
         List<TestPunyaAceng.Detail> value = new ArrayList<>();
         List<Object[]> details = getFinalData(tipe, true).getResultList();
@@ -126,10 +125,11 @@ public class QueryDataKempid {
 
     }
 
-    public Query getKempidFinal(Integer tipe,String search, Boolean details){
+
+    // for job
+    public Query getKempidFinal(Integer tipe, String search){
 
         String select = "";
-        if (details){
             select = "select ut.id_company_type as roleId, " +
                     "        ut.name as roleName, " +
                     "        ut.created_date as createdDate, " +
@@ -137,11 +137,6 @@ public class QueryDataKempid {
                     "        ut.is_active as isAktif " +
                     "       from user_type ut " +
                     "JOIN company_type ct on ut.id_company_type = ct.id ";
-        } else {
-            select = "select ct.name as typeCompany " +
-                    "from user_type ut " +
-                    "JOIN company_type ct on ut.id_company_type = ct.id ";
-        }
 
         String where = "";
         if (search != null){
@@ -150,22 +145,27 @@ public class QueryDataKempid {
             where = "";
         }
 
-        String groupBy = "";
-        if (!details){
-            groupBy = "GROUP BY ct.id ";
-        }
-
-        String sql = select + where + groupBy;
+        String sql = select + where;
         Query query = entityManager.createNativeQuery(sql);
         if (search != null) {
             query.setParameter("tipe", tipe);
             query.setParameter("search", "%" + search + "%");
         }
 
-        log.info("SQL : " + query.toString());
+        log.info("SQL : " + sql);
         return query;
     }
+    public Query getKempidFinals2(String search){
+        String select = "select ct.name as typeCompany " +
+                        "from user_type ut " +
+                        "JOIN company_type ct on ut.id_company_type = ct.id " +
+                        "WHERE ut.name LIKE :search " +
+                        "GROUP BY ct.name ";
+        Query query = entityManager.createNativeQuery(select);
+        query.setParameter("search", "%" + search + "%");
 
+        return query;
+    }
     public List<TypeCompanyDto> getAllKempid(String search){
 
         String select = "select ct.id, ut.name " +
@@ -187,13 +187,13 @@ public class QueryDataKempid {
         if (search != null) {
             query.setParameter("search", "%" + search + "%");
         }
-        log.info("SQL : " + query.toString());
 
+        log.info("SQL : " + sql);
         List<Object[]> record = query.getResultList();
         List<TypeCompanyDto> newType = new ArrayList<>();
         for (Object[] value : record){
             TypeCompanyDto model = new TypeCompanyDto();
-            model.setId((Integer) value[0]);
+//            model.setId((Integer) value[0]);
             model.setName((String) value[1]);
             newType.add(model);
         }
@@ -201,26 +201,27 @@ public class QueryDataKempid {
         return newType;
 
     }
-
     public TestPunyaAceng finalKempidPower(Integer tipe, String search){
 
         List<TestPunyaAceng.Detail> value = new ArrayList<>();
-        List<Object[]> details = getKempidFinal(tipe, search, true).getResultList();
+        List<Object[]> details = getKempidFinal(tipe, search).getResultList();
+        String ct = "";
         if (details.isEmpty()){
-//            TestPunyaAceng.Detail model = TestPunyaAceng.Detail.builder()
-//                    .roleId(null)
-//                    .roleName(null)
-//                    .isAktif(null)
-//                    .typeCompay(null)
-//                    .createdDate(null)
-//                    .disableDate(null)
-//                    .build();
-//            value.add(model);
+            TestPunyaAceng.Detail model = TestPunyaAceng.Detail.builder()
+                    .roleId(null)
+                    .roleName(null)
+                    .isAktif(null)
+                    .typeCompay(null)
+                    .createdDate(null)
+                    .disableDate(null)
+                    .build();
+            value.add(model);
         }else {
             for (Object[] record : details){
                 TestPunyaAceng.Detail model = new TestPunyaAceng.Detail();
+                ct = (String) record[1];
                 model.setRoleId((Integer) record[0]);
-                model.setRoleName((String) record[1]);
+                model.setRoleName(ct);
                 model.setCreatedDate(record[2].toString());
                 model.setDisableDate("null");
                 model.setTypeCompay((String) record[3]);
@@ -231,19 +232,19 @@ public class QueryDataKempid {
 
         TestPunyaAceng.GroupTitle title = null;
         try {
-            String groupTitle = (String) getKempidFinal(tipe, search, false).getSingleResult();
+            String groupTitle = (String) getKempidFinals2(search).getSingleResult();
             title = TestPunyaAceng.GroupTitle.builder()
                     .typePerusahaan(groupTitle)
                     .build();
         }catch (NoResultException ex){
             ex.getMessage();
-//            title = TestPunyaAceng.GroupTitle.builder()
-//                    .typePerusahaan("KOSONG CENG CENG")
-//                    .build();
+            title = TestPunyaAceng.GroupTitle.builder()
+                    .typePerusahaan("KOSONG CENG CENG")
+                    .build();
         }catch (NonUniqueResultException ex){
-//            title = TestPunyaAceng.GroupTitle.builder()
-//                    .typePerusahaan("Tetep GA ketemu Ceng")
-//                    .build();
+            title = TestPunyaAceng.GroupTitle.builder()
+                    .typePerusahaan("Tetep GA ketemu Ceng")
+                    .build();
         }
 
         TestPunyaAceng.HeaderData key = TestPunyaAceng.HeaderData.builder()
@@ -255,8 +256,91 @@ public class QueryDataKempid {
                     .groupTitle(title)
                     .headerData(key)
                     .build();
-
         return kempid;
+    }
+
+
+    // revamp
+    public List<TypeCompanyDto> getRevamp(String search){
+
+        String condition = "select " +
+                "    ut.id as userId, " +
+                "    ct.name as roleName, " +
+                "    ut.name as typeCompany " +
+                "                    from user_type ut " +
+                "                    JOIN company_type ct on ut.id_company_type = ct.id ";
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(condition);
+
+        String where = "";
+        if (search != null){
+            where = "WHERE ct.name LIKE :search ";
+            builder.append(where);
+        }else {
+            where = "";
+            builder.append(where);
+        }
+
+        String group = "GROUP BY ct.name ";
+        builder.append(group);
+
+        Query query = entityManager.createNativeQuery(builder.toString());
+        if (search != null)
+            query.setParameter("search", "%"+search+"%");
+
+        List<Object[]> objects = query.getResultList();
+        List<TypeCompanyDto> newType = new ArrayList<>();
+        for (Object[] value : objects){
+            TypeCompanyDto model = new TypeCompanyDto();
+            model.setId((Integer) value[0]);
+            model.setName((String) value[1]);
+            newType.add(model);
+        }
+
+        return newType;
+    }
+
+    public List<TestPunyaAceng.Detail> getRevampDetail(String search){
+        String condition = "select " +
+                "    ut.id as userId, " +
+                "    ct.name as roleName, " +
+                "    ut.created_date, " +
+                "    ut.id_company_type as typeCompany, " +
+                "    ut.is_active as isaktif " +
+                "                    from user_type ut " +
+                "                    JOIN company_type ct on ut.id_company_type = ct.id ";
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(condition);
+
+        String where = "";
+        if (search != null){
+            where = "WHERE ct.name LIKE :search ";
+            builder.append(where);
+        }else {
+            where = "";
+            builder.append(where);
+        }
+
+        Query query = entityManager.createNativeQuery(builder.toString());
+        if (search != null)
+            query.setParameter("search", "%"+search+"%");
+
+        List<TestPunyaAceng.Detail> value = new ArrayList<>();
+        List<Object[]> details = query.getResultList();
+        for (Object[] record : details){
+            TestPunyaAceng.Detail model = new TestPunyaAceng.Detail();
+            model.setRoleId((Integer) record[0]);
+            model.setRoleName((String) record[1]);
+            model.setCreatedDate(record[2].toString());
+            model.setDisableDate("null");
+            model.setTypeCompay(((Integer) record[3]).toString());
+            model.setIsAktif((Integer) record[4]);
+            value.add(model);
+        }
+
+        return value;
     }
 
 }

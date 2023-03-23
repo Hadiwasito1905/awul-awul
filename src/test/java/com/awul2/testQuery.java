@@ -68,29 +68,23 @@ public class testQuery {
 
     }
 
-//    @Test
-//    void finalAll(){
-//
-//        Gson gson = new Gson();
-//        String search = "admin";
-//        List<TypeCompanyDto> headerCol = dataKempid.getAllKempid(search);
-//        List<TestPunyaAceng> record = new ArrayList<>();
-//
-//        for (TypeCompanyDto value : headerCol){
-//            TestPunyaAceng model = dataKempid.finalKempidPower(value.getId());
-//            record.add(model);
-//        }
-//
-//        System.out.println(gson.toJson(record));
-//    }
+    @Test
+    void kempidFinal2(){
 
-//    @Test
-//    void testLagih(){
-//        Gson gson = new Gson();
-//        Integer tipe = 3;
-//        String search = "admin";
-//        TestPunyaAceng data = dataKempid.finalKempidPower(tipe);
-//        System.out.println("PRINT THIS " + gson.toJson(data));
-//    }
+        Gson gson = new Gson();
+        String search = "admin";
+        String headerCol = (String) dataKempid.getKempidFinals2(search).getSingleResult();
+
+        System.out.println(gson.toJson(headerCol));
+    }
+
+    @Test
+    void getRevamp(){
+        Gson gson = new Gson();
+        Integer tipe = 3;
+        String search = "ad";
+        List<?> data = dataKempid.getRevamp(search);
+        System.out.println("PRINT THIS " + gson.toJson(data));
+    }
 
 }

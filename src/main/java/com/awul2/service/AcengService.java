@@ -18,6 +18,7 @@ public interface AcengService {
     ResponseEntity<List<TestPunyaAceng>> getFinalData();
     ResponseEntity<List<TestPunyaAceng>> getUltimateKempid(String search);
     ResponseEntity<Object> samplePage(Integer pageNumber, Integer pageSize);
+    ResponseEntity<Object> revamp(String search);
 
 
 }
